@@ -37,21 +37,28 @@ export function validateStory(f) {
   return { ok: Object.keys(e).length === 0, errors: e };
 }
 
+
 export function cleanStory(f) {
   const anon = f.mode === 'anonymous';
+
   return {
     mode: f.mode,
-    is_minor: !!f.is_minor,
+    is_minor: f.is_minor,
     category: f.category,
     story_body: t(f.story_body),
+
+    // Never retain identifying information in anonymous mode
     reporter_name: anon ? null : t(f.reporter_name) || null,
-    reporter_contact: t(f.reporter_contact) || null,
+    reporter_contact: anon ? null : t(f.reporter_contact) || null,
     school_name: anon ? null : t(f.school_name) || null,
-    consent_storage: !!f.consent_storage,
-    consent_adaptation: !!f.consent_adaptation,
-    consent_publication: !!f.consent_publication,
-    consent_school_forward: anon ? false : !!f.consent_school_forward,
-    guardian_permission: !!f.guardian_permission,
+
+    consent_storage: f.consent_storage,
+    consent_adaptation: f.consent_adaptation,
+    consent_publication: f.consent_publication,
+    consent_school_forward: anon ? false : f.consent_school_forward,
+    guardian_permission: f.guardian_permission,
+
+    // Controlled by the server
     consent_version: 'v1',
   };
 }
