@@ -47,9 +47,9 @@ export function cleanStory(f) {
     category: f.category,
     story_body: t(f.story_body),
 
-    // Never retain identifying information in anonymous mode
+    // Anonymous mode hides name and school, but allows optional contact
     reporter_name: anon ? null : t(f.reporter_name) || null,
-    reporter_contact: anon ? null : t(f.reporter_contact) || null,
+    reporter_contact: t(f.reporter_contact) || null,
     school_name: anon ? null : t(f.school_name) || null,
 
     consent_storage: f.consent_storage,
