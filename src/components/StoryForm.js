@@ -48,7 +48,7 @@ export default function StoryForm() {
       <div className="card done">
         <h2>Ceritamu sudah kami terima</h2>
         <p>Terima kasih sudah berani bersuara. Hanya staf Ruang Berani yang ditugaskan yang dapat membacanya, dan hanya sesuai persetujuan yang kamu pilih.</p>
-        <p>{reachable ? 'Kami akan berusaha menghubungimu lewat kontak yang kamu isi namun bila membutuhkan bantuan segera silahkan hubungi.' : 'Karena kamu tidak menyertakan kontak, kami tidak bisa menghubungimu. Jika kamu butuh bantuan segera, hubungi layanan di bawah ini.'}</p>
+        <p>{reachable ? 'Kami akan berusaha menghubungimu lewat kontak yang kamu isi namun bila membutuhkan bantuan segera silahkan hubungi kanal kempppa berikut :.' : 'Karena kamu tidak menyertakan kontak, kami tidak bisa menghubungimu. Jika kamu butuh bantuan segera, hubungi layanan di bawah ini.'}</p>
         <ul>{HELP_LINES.map((h) => <li key={h.name}><strong>{h.name}</strong>: {h.detail}</li>)}</ul>
       </div>
     );
