@@ -18,6 +18,16 @@ export default function StoryForm() {
   const set = (k, v) => setF((p) => ({ ...p, [k]: v }));
   const anon = f.mode === 'anonymous';
 
+  // Switching to anonymous clears identity fields (and the school-forward consent) from state, not just at submit.
+  function chooseMode(mode) {
+    setF((p) =>
+      mode === 'anonymous'
+        ? { ...p, mode, reporter_name: '', school_name: '', consent_school_forward: false }
+        : { ...p, mode }
+    );
+    setErrors({});
+  }
+
   async function submit(e) {
     e.preventDefault();
     const { ok, errors: er } = validateStory(f);
@@ -38,7 +48,7 @@ export default function StoryForm() {
       <div className="card done">
         <h2>Ceritamu sudah kami terima</h2>
         <p>Terima kasih sudah berani bersuara. Hanya staf Ruang Berani yang ditugaskan yang dapat membacanya, dan hanya sesuai persetujuan yang kamu pilih.</p>
-        <p>{reachable ? 'Kami akan menghubungimu lewat kontak yang kamu isi.' : 'Karena kamu tidak menyertakan kontak, kami tidak bisa menghubungimu. Jika kamu butuh bantuan segera, hubungi layanan di bawah ini.'}</p>
+        <p>{reachable ? 'Kami akan berusaha menghubungimu lewat kontak yang kamu isi.' : 'Karena kamu tidak menyertakan kontak, kami tidak bisa menghubungimu. Jika kamu butuh bantuan segera, hubungi layanan di bawah ini.'}</p>
         <ul>{HELP_LINES.map((h) => <li key={h.name}><strong>{h.name}</strong>: {h.detail}</li>)}</ul>
       </div>
     );
@@ -51,12 +61,12 @@ export default function StoryForm() {
         <legend>1. Pilih cara kamu bercerita</legend>
         <div className="choices">
           <label className={`choice ${anon ? 'on' : ''}`}>
-            <input type="radio" name="mode" checked={anon} onChange={() => set('mode', 'anonymous')} />
+            <input type="radio" name="mode" checked={anon} onChange={() => chooseMode('anonymous')} />
             <strong>Anonim</strong>
-            <span>Tanpa nama dan sekolah. Kontak boleh dikosongkan.</span>
+            <span>Tanpa nama dan sekolah. Kontak bersifat opsional.</span>
           </label>
           <label className={`choice ${!anon ? 'on' : ''}`}>
-            <input type="radio" name="mode" checked={!anon} onChange={() => set('mode', 'identified')} />
+            <input type="radio" name="mode" checked={!anon} onChange={() => chooseMode('identified')} />
             <strong>Tidak anonim</strong>
             <span>Nama dan kontak diisi supaya kami bisa mendampingimu.</span>
           </label>
@@ -75,7 +85,9 @@ export default function StoryForm() {
             <input id="name" value={f.reporter_name} onChange={(e) => set('reporter_name', e.target.value)} autoComplete="name" /><Err m={errors.reporter_name} /></div>
         )}
         <div className="field"><label htmlFor="contact">{anon ? 'Kontak (opsional): WhatsApp atau email' : 'Kontak: WhatsApp atau email'}</label>
-          <input id="contact" value={f.reporter_contact} onChange={(e) => set('reporter_contact', e.target.value)} /><Err m={errors.reporter_contact} /></div>
+          <input id="contact" value={f.reporter_contact} onChange={(e) => set('reporter_contact', e.target.value)} />
+          {anon && <small>Jika kamu mengisi kontak, kami akan berusaha menghubungimu untuk mendampingi, tetapi itu berarti kamu tidak sepenuhnya anonim.</small>}
+          <Err m={errors.reporter_contact} /></div>
         {!anon && (
           <div className="field"><label htmlFor="school">Sekolah (opsional, wajib bila ingin diteruskan ke BK)</label>
             <input id="school" value={f.school_name} onChange={(e) => set('school_name', e.target.value)} /><Err m={errors.school_name} /></div>
